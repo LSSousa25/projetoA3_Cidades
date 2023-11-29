@@ -202,9 +202,9 @@ public class Grafo<T> {
 			String path = node.getMenorDistancia().stream().map(Municipio::getNome).map(Objects::toString)
 					.collect(Collectors.joining(" -> "));
 
-			resultBuilder.append(path.isBlank() ? String.format("%s : %s", node.getNome(), node.getCustoRota())
-					: String.format("%s -> %s : %s", path, node.getNome(), node.getCustoRota()));
-			resultBuilder.append(String.format(" (Pedágios: %d)", node.getQtdPedagios()));
+			resultBuilder.append(path.isBlank() ? String.format("%s ; %s", node.getNome(), node.getCustoRota())
+					: String.format("%s -> %s ; %s", path, node.getNome(), node.getCustoRota()));
+			resultBuilder.append(String.format(" ;Pedágios: %d", node.getQtdPedagios()));
 			resultBuilder.append(System.lineSeparator());
 		});
 
