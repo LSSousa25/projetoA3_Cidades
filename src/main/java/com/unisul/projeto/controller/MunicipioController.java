@@ -23,7 +23,7 @@ public class MunicipioController {
 	private Grafo<String> grafo;
 
 	@GetMapping("/buscar-rota")
-	public ResponseEntity<String> buscarRota(@RequestParam String origem, @RequestParam String destino,
+	public ResponseEntity<RotaDetalhado> buscarRota(@RequestParam String origem, @RequestParam String destino,
 			@RequestParam String tipoCalculo, @RequestParam String tipoVeiculo) {
 		Municipio<String> Armazem = new Municipio<>("Armazem");
 		Municipio<String> BracodoNorte = new Municipio<>("BracodoNorte");
@@ -120,22 +120,59 @@ public class MunicipioController {
 		}
 
 		if (origemMunicipio == null || destinoMunicipio == null) {
-			return ResponseEntity.badRequest().body("Origem ou destino não encontrados na lista de municípios.");
+			return ResponseEntity.badRequest()
+					.body(new RotaDetalhado("Origem ou destino não encontrados na lista de municípios."));
 		}
 
-		String caminho = "";
+		String rota = "";
 		if ("caminho".equalsIgnoreCase(tipoCalculo)) {
 			this.grafo.calcularCaminhoMaisCurto(origemMunicipio);
 			this.grafo.imprimirCaminho(List.of(destinoMunicipio));
-			caminho = this.grafo.obterCaminhoComoString(List.of(destinoMunicipio));
+			rota = this.grafo.obterCaminhoComoString(List.of(destinoMunicipio));
 
 		} else if ("custo".equalsIgnoreCase(tipoCalculo)) {
 			this.grafo.calcularMenorCustoAPartirDeOrigem(origemMunicipio, tipoVeiculo);
 			this.grafo.imprimirCustoCaminho(List.of(destinoMunicipio));
-			caminho = this.grafo.obterCustoComoString(List.of(destinoMunicipio));
+			rota = this.grafo.obterCustoComoString(List.of(destinoMunicipio));
 		}
 
-		return ResponseEntity.ok(caminho);
+		String[] partesCaminho = rota.split(";");
+
+		if (partesCaminho.length == 3) {
+			RotaDetalhado caminhoDetalhado = new RotaDetalhado(partesCaminho[0], partesCaminho[1], partesCaminho[2]);
+
+			return ResponseEntity.ok(caminhoDetalhado);
+		} else {
+			return ResponseEntity.badRequest().body(new RotaDetalhado("Formato de caminho inválido"));
+		}
 	}
 
+// Classe para representar a resposta como JSON
+// Classe para representar os detalhes do caminho
+	private static class RotaDetalhado {
+		private String rota;
+		private String distancia;
+		private String pedagios;
+
+		public RotaDetalhado(String rota, String distancia, String pedagios) {
+			this.rota = rota;
+			this.distancia = distancia;
+			this.pedagios = pedagios;
+		}
+
+		public RotaDetalhado(String string) {
+		}
+
+		public String getRota() {
+			return rota;
+		}
+
+		public String getDistancia() {
+			return distancia;
+		}
+
+		public String getPedagios() {
+			return pedagios;
+		}
+	}
 }

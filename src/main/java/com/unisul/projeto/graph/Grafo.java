@@ -162,8 +162,8 @@ public class Grafo<T> {
 			String path = node.getMenorDistancia().stream().map(Municipio::getNome).map(Objects::toString)
 					.collect(Collectors.joining(" -> "));
 
-			System.out.println((path.isBlank() ? "%s : %s".formatted(node.getNome(), node.getDistancia())
-					: "%s -> %s : %s".formatted(path, node.getNome(), node.getDistancia())));
+			System.out.println((path.isBlank() ? "%s ; %s".formatted(node.getNome(), node.getDistancia())
+					: "%s -> %s ; %s".formatted(path, node.getNome(), node.getDistancia())));
 		});
 	}
 
@@ -186,10 +186,10 @@ public class Grafo<T> {
 			String path = node.getMenorDistancia().stream().map(Municipio::getNome).map(Objects::toString)
 					.collect(Collectors.joining(" -> "));
 
-			resultBuilder.append(path.isBlank() ? String.format("%s : %s", node.getNome(), node.getDistancia())
-					: String.format("%s -> %s : %s", path, node.getNome(), node.getDistancia()));
-			resultBuilder.append(String.format(" (Pedágios: %d)", node.getQtdPedagios()));
-			resultBuilder.append(System.lineSeparator());
+			resultBuilder.append(path.isBlank() ? String.format("%s ; %s", node.getNome(), node.getDistancia())
+					: String.format("%s -> %s ; %s", path, node.getNome(), node.getDistancia()));
+			resultBuilder.append(String.format(" ; %d ", node.getQtdPedagios()));
+			// resultBuilder.append(System.lineSeparator());
 		});
 
 		return resultBuilder.toString();
