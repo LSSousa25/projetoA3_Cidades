@@ -62,6 +62,16 @@ public class Grafo<T> {
 	private void avaliarCaminho(Municipio<T> cidadeAdjacente, Double pesoDaRota, Municipio<T> cidadeorigem) {
 		Double newDistancia = cidadeorigem.getDistancia() + pesoDaRota;
 
+		if (cidadeorigem.getPedagios().containsKey(cidadeAdjacente)) {
+			double pedagioValue = cidadeorigem.getPedagios().get(cidadeAdjacente);
+
+			if (pedagioValue > 0) {
+				int qtdPedagios = cidadeorigem.getQtdPedagios() + 1;
+				cidadeAdjacente.setQtdPedagios(qtdPedagios);
+
+			}
+		}
+
 		if (newDistancia < cidadeAdjacente.getDistancia()) {
 			cidadeAdjacente.setDistancia(newDistancia);
 			List<Municipio<T>> newCaminho = new ArrayList<>(cidadeorigem.getMenorDistancia());
